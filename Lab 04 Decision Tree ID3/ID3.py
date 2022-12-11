@@ -1,18 +1,15 @@
 import math
 import csv
-
 def load_csv(filename):
     lines=csv.reader(open(filename,"r"));
     dataset = list(lines)
     headers = dataset.pop(0)
     return dataset,headers
-
 class Node:
     def __init__ (self,attribute):
         self.attribute=attribute
         self.children=[]
         self.answer=""
-
 def subtables(data,col,delete):
     dic={}
     coldata=[row[col] for row in data]
@@ -34,7 +31,6 @@ def subtables(data,col,delete):
                 dic[attr[x]][pos]=data[y]
                 pos+=1
     return attr,dic
-
 def entropy(S):
     attr=list(set(S))
     if len(attr)==1:
@@ -46,7 +42,6 @@ def entropy(S):
     for cnt in counts:
         sums+=-1*cnt*math.log(cnt,2)
     return sums
-
 def compute_gain(data,col):
     attr,dic = subtables(data,col,delete=False)
     total_size=len(data)
@@ -56,10 +51,8 @@ def compute_gain(data,col):
     for x in range(len(attr)):
         ratio[x]=len(dic[attr[x]])/(total_size*1.0)
         entropies[x]=entropy([row[-1] for row in dic[attr[x]]])
-
         total_entropy-=ratio[x]*entropies[x]
     return total_entropy
-
 def build_tree(data,features):
     lastcol=[row[-1] for row in data]
     if(len(set(lastcol)))==1:
@@ -78,7 +71,6 @@ def build_tree(data,features):
         child=build_tree(dic[attr[x]],fea)
         node.children.append((attr[x],child))
     return node
-
 def print_tree(node,level):
     if node.answer!="":
         print(" "*level,node.answer)
@@ -87,7 +79,6 @@ def print_tree(node,level):
     for value,n in node.children:
         print(" "*(level+1),value)
         print_tree(n,level+2)
-
 def classify(node,x_test,features):
     if node.answer!="":
         print(node.answer)
@@ -96,8 +87,6 @@ def classify(node,x_test,features):
     for value, n in node.children:
         if x_test[pos]==value:
             classify(n,x_test,features)
-
-
 dataset,features=load_csv("traintennis.csv")
 node1=build_tree(dataset,features)
 print("The decision tree for the dataset using ID3 algorithm is")
